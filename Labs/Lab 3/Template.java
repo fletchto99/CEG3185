@@ -1,11 +1,22 @@
-
-
+import java.io.BufferedOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
 public class Template {
 
 
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws FileNotFoundException {
+
+        if (args.length != 1) {
+            System.out.println("Please pass a file path to the first argument.");
+            return;
+        }
+
+        PrintStream ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(args[0])));
+        System.setOut(ps);
+
 
 
         //sample codes
@@ -26,6 +37,9 @@ public class Template {
         shape5(9);
         System.out.println();
         shape6(9);
+
+        ps.flush();
+        ps.close();
 
         //read the pattern File e.g. "c://lab3.txt" and display to the screen
 
@@ -177,8 +191,8 @@ public class Template {
 
             System.out.println(
                     new String(new char[numDots]).replace("\0", ".") +
-                            new String(new char[numNumbers]).replace("\0", Integer.toString(i)) +
-                            new String(new char[numDots]).replace("\0", ".")
+                    new String(new char[numNumbers]).replace("\0", Integer.toString(i)) +
+                    new String(new char[numDots]).replace("\0", ".")
             );
         }
     }
