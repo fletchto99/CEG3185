@@ -1,0 +1,1 @@
+See [Lab 6](http://www.site.uottawa.ca/~jyzhao/courses/ceg3185/lab6_ceg3185_2017w.pdf)
