@@ -1,6 +1,7 @@
 package me.matt.hdlc;
 
 import me.matt.hdlc.utils.Constants;
+import me.matt.hdlc.utils.HDLC;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -14,6 +15,7 @@ import java.util.concurrent.Executors;
 public class Server implements Runnable {
 
     private final int port;
+    private int id = 0;
     private ExecutorService executorService = Executors.newFixedThreadPool(10);
     private ServerSocket serverSocket;
 
@@ -26,12 +28,12 @@ public class Server implements Runnable {
     }
 
     public void run() {
-        System.out.printf("[Server]Starting on port %d%n", port);
+        System.out.printf("[Server] Starting on port %d%n", port);
         try {
             serverSocket = new ServerSocket(port);
             while (true) {
                     Socket client = serverSocket.accept();
-                    executorService.execute(onConnect(client));
+                    executorService.execute(onConnect(client, id++));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -46,26 +48,26 @@ public class Server implements Runnable {
             //Stop accepting requests.
             serverSocket.close();
         } catch (Exception e) {
-            System.out.println("Error in server shutdown");
+            System.out.println("[Server] Error in server shutdown");
             e.printStackTrace();
         }
         System.exit(0);
     }
 
-    private Runnable onConnect(final Socket client) {
+    private Runnable onConnect(final Socket client, final int id) {
         return () -> {
             try {
                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream(), "UTF-8"));
                 PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream(), "UTF-8"), true);
-                while (true) {
-                    String clientCommand = in.readLine();
-                    System.out.println("Client Says :" + clientCommand);
-                    if (clientCommand.equalsIgnoreCase("quit")) {
-                        stopServer();
+
+                String response;
+
+                //Send SNRM to both machines
+                out.write(HDLC.CONTROL_SNRM);
+
+                while ((response = in.readLine()) != null) {
+                    if (response.equals(HDLC.CONTROL_UA)) {
                         break;
-                    } else {
-                        out.println(clientCommand);
-                        out.flush();
                     }
                 }
             } catch (Exception e) {
