@@ -12,4 +12,12 @@ public class HDLC {
         public static final String CONTROL_UA = "11001110";
         public static final String CONTROL_INFO = "00010000";
         public static final String CONTROL_RR = "10001000";
+	
+	private boolean checkFlags(String message) {
+		boolean result = false;
+		if (message.substring(0, EIGHT_BITS).equals(FLAG)
+				&& message.substring(message.length() - EIGHT_BITS, message.length()).equals(FLAG))
+			result = true;
+		return result;
+	}
 }
