@@ -7,6 +7,7 @@ public class HDLC {
     public static final String CONTROL_SNRM = "11001001";
     public static final String CONTROL_UA   = "11001110";
     public static final String CONTROL_INFO = "00010000";
-    public static final String CONTROL_RR   = "10001000";
+    public static final String CONTROL_RRP = "10001000";
+    public static final String CONTROL_RRF= "10011000";
 
 }
