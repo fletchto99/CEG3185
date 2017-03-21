@@ -15,8 +15,8 @@ public class HDLC {
 	
 	private boolean checkFlags(String message) {
 		boolean result = false;
-		if (message.substring(0, EIGHT_BITS).equals(FLAG)
-				&& message.substring(message.length() - EIGHT_BITS, message.length()).equals(FLAG))
+		if (message.substring(0, 8).equals(FLAG)
+				&& message.substring(message.length() - 8, message.length()).equals(FLAG))
 			result = true;
 		return result;
 	}
