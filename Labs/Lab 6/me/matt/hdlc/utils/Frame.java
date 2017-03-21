@@ -8,6 +8,10 @@ public class Frame {
     private String control;
     private String message;
 
+    public Frame(final String address, final String control) {
+        this(address, control, "0000000000000000000000000000000000000000000000000000000000000000");
+    }
+
     public Frame(final String address, final String control, final String message) {
         this.address = address;
         this.control = control;
