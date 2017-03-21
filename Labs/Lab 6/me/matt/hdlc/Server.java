@@ -124,7 +124,7 @@ public class Server implements Runnable {
         if (addr == 1) {
             out.write(new Frame("0000000"+String.valueOf(addr), HDLC.CONTROL_INFO).toString());
         }
-        p0();
+        p0(in, out, addr);
     }
 
     void p5(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
@@ -136,7 +136,7 @@ public class Server implements Runnable {
         } else {
             System.out.printf("[Server] consume: %s%n", response);
         }
-        p2(in, out, addr);
+        p4(in, out, addr);
     }
 
     void p6(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
