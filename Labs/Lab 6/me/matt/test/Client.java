@@ -1,4 +1,4 @@
-package me.matt.hdlc.test;
+package me.matt.test;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

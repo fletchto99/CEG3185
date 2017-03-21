@@ -1,4 +1,4 @@
-package me.matt.hdlc.test.server;
+package me.matt.test.server;
 
 import java.io.IOException;
 import java.nio.channels.CompletionHandler;

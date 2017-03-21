@@ -1,6 +1,6 @@
-package me.matt.hdlc.test;
+package me.matt.test;
 
-import me.matt.hdlc.test.server.Server;
+import me.matt.test.server.Server;
 
 
 public class Applcation {
