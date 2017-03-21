@@ -19,20 +19,19 @@ public class Client implements Runnable {
 
 
     public void run() {
-        System.out.println("[Client] Connecting to localhost on port " + port);
+        System.out.printf("[Client] Connecting to localhost on port %d%n ", port);
         try {
             Socket socket = new Socket("127.0.0.1", port);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
             PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"), true);
 
-            System.out.println("[Client] Connected to localhost on port " + port);
+            System.out.printf("[Client] Connected to localhost on port %d%n", port);
 
             // Send Request to send message to server
             System.out.println("[Client] Sending rts message");
 
 
             String message;
-//            inputStream:
             while ((message = in.readLine()) != null) {
                 switch (message) {
 
