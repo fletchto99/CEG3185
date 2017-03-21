@@ -13,7 +13,7 @@ public class HDLC {
         public static final String CONTROL_INFO = "00010000";
         public static final String CONTROL_RR = "10001000";
 	
-	private boolean checkFlags(String message) {
+	public boolean checkFlags(String message) {
 		boolean result = false;
 		if (message.substring(0, 8).equals(FLAG)
 				&& message.substring(message.length() - 8, message.length()).equals(FLAG))
