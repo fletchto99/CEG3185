@@ -1,6 +1,7 @@
 package me.matt.hdlc;
 
 import me.matt.hdlc.utils.Constants;
+import me.matt.hdlc.utils.Frame;
 import me.matt.hdlc.utils.HDLC;
 
 import java.io.BufferedReader;
@@ -66,7 +67,7 @@ public class Server implements Runnable {
                 out.write(HDLC.CONTROL_SNRM);
 
                 while ((response = in.readLine()) != null) {
-                    if (response.equals(HDLC.CONTROL_UA)) {
+                    if (Frame.fromString(response).getControl().equals(HDLC.CONTROL_UA)) {
                         break;
                     }
                 }
