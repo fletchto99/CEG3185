@@ -14,8 +14,7 @@ public class Server implements Runnable {
 
     private final int port;
     private int id = 0;
-    private ExecutorService executorService = Executors.newFixedThreadPool(10);
-    private ServerSocket serverSocket;
+    private ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
 
     public Server() {
         this(Constants.DEFAULT_PORT);
@@ -28,7 +27,7 @@ public class Server implements Runnable {
     public void run() {
         System.out.printf("[Server] Starting on port %d%n", port);
         try {
-            serverSocket = new ServerSocket(port);
+            ServerSocket serverSocket = new ServerSocket(port);
             while (true) {
                     Socket client = serverSocket.accept();
                     executorService.execute(onConnect(client, id++));
@@ -39,24 +38,12 @@ public class Server implements Runnable {
         System.out.println("[Server] Finished");
     }
 
-    private void stopServer() {
-        //Stop the executor service.
-        executorService.shutdownNow();
-        try {
-            //Stop accepting requests.
-            serverSocket.close();
-        } catch (Exception e) {
-            System.out.println("[Server] Error in server shutdown");
-            e.printStackTrace();
-        }
-        System.exit(0);
-    }
-
     private Runnable onConnect(final Socket client, final int addr) {
         return () -> {
             try {
                 BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream(), "UTF-8"));
                 PrintWriter out = new PrintWriter(new OutputStreamWriter(client.getOutputStream(), "UTF-8"), true);
+                System.out.printf("[Server] Received connection from client at %s given the id %d%n", client.getInetAddress().toString(), addr);
                 p0(in, out, addr);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -65,11 +52,11 @@ public class Server implements Runnable {
     }
 
 
-    void p0(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
+    private void p0(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
         String response;
 
         //Send SNRM to both machines
-        out.write(new Frame("0000000" + String.valueOf(id), HDLC.CONTROL_SNRM).toString());
+        out.println(new Frame("0000000" + String.valueOf(id), HDLC.CONTROL_SNRM).toString());
 
         //receive UA
         while ((response = in.readLine()) != null) {
@@ -80,13 +67,13 @@ public class Server implements Runnable {
         p1(in, out, addr);
     }
 
-    void p1(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
+    private void p1(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
         String response;
         if (addr == 0) {
-            out.write(new Frame("0000000"+String.valueOf(addr), HDLC.CONTROL_RRP).toString());
+            out.println(new Frame("0000000"+String.valueOf(addr), HDLC.CONTROL_RRP).toString());
             while ((response = in.readLine()) != null) {
                 String control = Frame.fromString(response).getControl();
-                if (control.equals(HDLC.CONTROL_RRF)) {
+                if (control.equals(HDLC.CONTROL_UA)) {
                     p2(in, out, addr);
                     break;
                 } else if (control.equals(HDLC.CONTROL_INFO)) {
@@ -97,13 +84,13 @@ public class Server implements Runnable {
         }
     }
 
-    void p2(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
+    private void p2(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
         String response;
         if (addr == 1) {
-            out.write(new Frame("0000000"+String.valueOf(addr), HDLC.CONTROL_RRP).toString());
+            out.println(new Frame("0000000"+String.valueOf(addr), HDLC.CONTROL_RRP).toString());
             while ((response = in.readLine()) != null) {
                 String control = Frame.fromString(response).getControl();
-                if (control.equals(HDLC.CONTROL_RRF)) {
+                if (control.equals(HDLC.CONTROL_UA)) {
                     p3(in, out, addr);
                     break;
                 } else if (control.equals(HDLC.CONTROL_INFO)) {
@@ -114,38 +101,38 @@ public class Server implements Runnable {
         }
     }
 
-    void p3(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
+    private void p3(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
         if (addr == 0) {
-            out.write(new Frame("0000000"+String.valueOf(addr), HDLC.CONTROL_INFO).toString());
+            out.println(new Frame("0000000"+String.valueOf(addr), HDLC.CONTROL_INFO).toString());
         }
         p0(in, out, addr);
     }
 
-    void p4(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
+    private void p4(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
         if (addr == 1) {
-            out.write(new Frame("0000000"+String.valueOf(addr), HDLC.CONTROL_INFO).toString());
+            out.println(new Frame("0000000"+String.valueOf(addr), HDLC.CONTROL_INFO).toString());
         }
         p0(in, out, addr);
     }
 
-    void p5(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
+    private void p5(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
         String response = in.readLine();
         String address = Frame.fromString(response).getAddress();
         if (address.equals("00000001") && addr == 1) {
             //C Consume
-            out.write(response);
+            out.println(response);
         } else {
-            System.out.printf("[Server] consume: %s%n", response);
+            System.out.printf("[Server] consuming message: %s%n", response);
         }
         p4(in, out, addr);
     }
 
-    void p6(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
+    private void p6(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
         String response = in.readLine();
         String address = Frame.fromString(response).getAddress();
         if (address.equals("00000000") && addr == 0) {
             //B Consume
-            out.write(response);
+            out.println(response);
         } else {
             System.out.printf("[Server] consume: %s%n", response);
         }

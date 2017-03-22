@@ -1,7 +1,5 @@
 package me.matt.hdlc.utils;
 
-import java.util.concurrent.ExecutionException;
-
 public class Frame {
 
     private String address;
