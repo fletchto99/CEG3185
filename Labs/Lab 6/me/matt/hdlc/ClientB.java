@@ -37,11 +37,9 @@ public class ClientB implements Runnable {
             String message;
             //inputStream:
             while ((message = in.readLine()) != null) {
-            	if(checkFlags(message)){
-            		if(s0(message, out)){
-            			s1(message, fromUser, out);
-            			s2(message);
-            		}
+            	if(checkFlags(message) && s0(message, out)){
+            		s1(message, fromUser, out);
+            		s2(message);
             	}
             }
             
