@@ -91,7 +91,7 @@ public class Server implements Runnable {
             while ((response = in.readLine()) != null) {
                 String control = Frame.fromString(response).getControl();
                 if (control.equals(HDLC.CONTROL_UA)) {
-                    p3(in, out, addr);
+                    p4(in, out, addr);
                     break;
                 } else if (control.equals(HDLC.CONTROL_INFO)) {
                     p6(in, out, addr);
