@@ -118,6 +118,7 @@ public class Server implements Runnable {
         if (addr == 0) {
             out.write(new Frame("0000000"+String.valueOf(addr), HDLC.CONTROL_INFO).toString());
         }
+        p0(in, out, addr);
     }
 
     void p4(final BufferedReader in, final PrintWriter out, final int addr) throws IOException {
